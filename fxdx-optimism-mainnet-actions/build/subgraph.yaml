@@ -1,0 +1,520 @@
+specVersion: 0.0.5
+description: FXDX
+repository: https://github.com/fxdx-io/fxdx-subgraph
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: OrderBook
+    network: optimism
+    source:
+      address: "0x57E83bd936B659abE02ecbb145F28E22Ab786bAf"
+      abi: OrderBook
+      startBlock: 97579389
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Action
+        - TokenSwapAction
+        - RecentSwapFee
+        - UserTradesStat
+      abis:
+        - name: OrderBook
+          file: OrderBook/abis/OrderBook.json
+      eventHandlers:
+        - event: CreateIncreaseOrder(indexed
+            address,uint256,address,uint256,address,address,uint256,bool,uint256,bool,uint256)
+          handler: handleCreateIncreaseOrder
+        - event: CancelIncreaseOrder(indexed
+            address,uint256,address,uint256,address,address,uint256,bool,uint256,bool,uint256)
+          handler: handleCancelIncreaseOrder
+        - event: UpdateIncreaseOrder(indexed
+            address,uint256,address,address,bool,uint256,uint256,bool)
+          handler: handleUpdateIncreaseOrder
+        - event: ExecuteIncreaseOrder(indexed
+            address,uint256,address,uint256,address,address,uint256,bool,uint256,bool,uint256,uint256)
+          handler: handleExecuteIncreaseOrder
+        - event: CreateDecreaseOrder(indexed
+            address,uint256,address,uint256,address,uint256,bool,uint256,bool,uint256)
+          handler: handleCreateDecreaseOrder
+        - event: CancelDecreaseOrder(indexed
+            address,uint256,address,uint256,address,uint256,bool,uint256,bool,uint256)
+          handler: handleCancelDecreaseOrder
+        - event: UpdateDecreaseOrder(indexed
+            address,uint256,address,uint256,address,uint256,bool,uint256,bool)
+          handler: handleUpdateDecreaseOrder
+        - event: ExecuteDecreaseOrder(indexed
+            address,uint256,address,uint256,address,uint256,bool,uint256,bool,uint256,uint256)
+          handler: handleExecuteDecreaseOrder
+        - event: CreateSwapOrder(indexed
+            address,uint256,address[],uint256,uint256,uint256,bool,bool,uint256)
+          handler: handleCreateSwapOrder
+        - event: CancelSwapOrder(indexed
+            address,uint256,address[],uint256,uint256,uint256,bool,bool,uint256)
+          handler: handleCancelSwapOrder
+        - event: UpdateSwapOrder(indexed
+            address,uint256,address[],uint256,uint256,uint256,bool,bool,uint256)
+          handler: handleUpdateSwapOrder
+        - event: ExecuteSwapOrder(indexed
+            address,uint256,address[],uint256,uint256,uint256,uint256,bool,bool,uint256)
+          handler: handleExecuteSwapOrder
+      file: OrderBook/OrderBook.wasm
+  - kind: ethereum/contract
+    name: Vault
+    network: optimism
+    source:
+      address: "0x10235996C4DAbCE8430a71Cbc06571bd475A1d0C"
+      abi: Vault
+      startBlock: 97574143
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Action
+        - TokenLeverageAction
+        - RecentPnl
+        - UserTradesStat
+        - RecentSwap
+        - RecentPositionTradeFees
+      abis:
+        - name: Vault
+          file: Vault/abis/Vault.json
+      eventHandlers:
+        - event: Swap(address,address,address,uint256,uint256,uint256,uint256)
+          handler: handleSwap
+        - event: BuyUSDF(address,address,uint256,uint256,uint256)
+          handler: handleBuyUSDF
+        - event: SellUSDF(address,address,uint256,uint256,uint256)
+          handler: handleSellUSDF
+        - event: IncreasePosition(bytes32,address,address,address,uint256,uint256,bool,uint256,uint256)
+          handler: handleIncreasePosition
+        - event: DecreasePosition(bytes32,address,address,address,uint256,uint256,bool,uint256,uint256)
+          handler: handleDecreasePosition
+        - event: LiquidatePosition(bytes32,address,address,address,bool,uint256,uint256,uint256,int256,uint256)
+          handler: handleLiquidatePosition
+        - event: UpdatePnl(bytes32,bool,uint256)
+          handler: handleUpdatePnl
+        - event: CollectPositionTradeFees(address,uint256,uint256)
+          handler: handleCollectPositionTradeFees
+      file: OrderBook/OrderBook.wasm
+  - kind: ethereum/contract
+    name: FastPriceEvents
+    network: optimism
+    source:
+      address: "0x65aFFb8bdE0330af9fEAa067846E22BdDe51266D"
+      abi: FastPriceEvents
+      startBlock: 97640321
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Price
+      abis:
+        - name: FastPriceEvents
+          file: FastPriceEvents/abis/FastPriceEvents.json
+      eventHandlers:
+        - event: PriceUpdate(address,uint256,address)
+          handler: handlePriceUpdate
+      file: FastPriceEvents/FastPriceEvents.wasm
+  - kind: ethereum/contract
+    name: PositionRouter
+    network: optimism
+    source:
+      address: "0x29aEa7e7e81B3eF6ABbb43AC5e92354685812DaE"
+      abi: PositionRouter
+      startBlock: 97580742
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Action
+      abis:
+        - name: PositionRouter
+          file: PositionRouter/abis/PositionRouter.json
+      eventHandlers:
+        - event: CreateIncreasePosition(indexed
+            address,address[],address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleCreateIncreasePosition
+        - event: CancelIncreasePosition(indexed
+            address,address[],address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint256)
+          handler: handleCancelIncreasePosition
+        - event: ExecuteIncreasePosition(indexed
+            address,address[],address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint256)
+          handler: handleExecuteIncreasePosition
+        - event: CreateDecreasePosition(indexed
+            address,address[],address,uint256,uint256,bool,address,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleCreateDecreasePosition
+        - event: CancelDecreasePosition(indexed
+            address,address[],address,uint256,uint256,bool,address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleCancelDecreasePosition
+        - event: ExecuteDecreasePosition(indexed
+            address,address[],address,uint256,uint256,bool,address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleExecuteDecreasePosition
+      file: OrderBook/OrderBook.wasm
+  - kind: ethereum/contract
+    name: SwapRouter
+    network: optimism
+    source:
+      address: "0x62D2e45B3133C25E9b04C6a289674068d45Db33a"
+      abi: SwapRouter
+      startBlock: 97580168
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Action
+        - TokenSwapAction
+        - RecentSwapFee
+        - UserTradesStat
+      abis:
+        - name: SwapRouter
+          file: SwapRouter/abis/SwapRouter.json
+      eventHandlers:
+        - event: CreateSwap(indexed
+            address,address[],uint256,uint256,address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleCreateSwap
+        - event: ExecuteSwap(indexed
+            address,address[],uint256,uint256,uint256,address,uint256,uint256,uint256,uint256)
+          handler: handleExecuteSwap
+        - event: CancelSwap(indexed
+            address,address[],uint256,uint256,address,uint256,uint256,uint256,uint256)
+          handler: handleCancelSwap
+      file: OrderBook/OrderBook.wasm
+  - kind: ethereum/contract
+    name: LiquidityRouter
+    network: optimism
+    source:
+      address: "0x0D4Ff6a3d86769d129F81E77667f22507A4900a6"
+      abi: LiquidityRouter
+      startBlock: 97635271
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Action
+      abis:
+        - name: LiquidityRouter
+          file: LiquidityRouter/abis/LiquidityRouter.json
+      eventHandlers:
+        - event: CreateAddLiquidity(indexed
+            address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleCreateAddLiquidity
+        - event: CancelAddLiquidity(indexed
+            address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleCancelAddLiquidity
+        - event: CreateRemoveLiquidity(indexed
+            address,address,uint256,uint256,address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleCreateRemoveLiquidity
+        - event: CancelRemoveLiquidity(indexed
+            address,address,uint256,uint256,address,uint256,uint256,uint256,uint256)
+          handler: handleCancelRemoveLiquidity
+      file: OrderBook/OrderBook.wasm
+  - kind: ethereum/contract
+    name: LiquidityRouterV2
+    network: optimism
+    source:
+      address: "0x9c330a0066D85AB706b6ABc565f9E5462F176714"
+      abi: LiquidityRouterV2
+      startBlock: 105560931
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Action
+      abis:
+        - name: LiquidityRouterV2
+          file: LiquidityRouterV2/abis/LiquidityRouterV2.json
+      eventHandlers:
+        - event: CreateAddLiquidity(indexed
+            address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleCreateAddLiquidity
+        - event: CancelAddLiquidity(indexed
+            address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleCancelAddLiquidity
+        - event: CreateRemoveLiquidity(indexed
+            address,address,uint256,uint256,address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleCreateRemoveLiquidity
+        - event: CancelRemoveLiquidity(indexed
+            address,address,uint256,uint256,address,uint256,uint256,uint256,uint256)
+          handler: handleCancelRemoveLiquidity
+      file: OrderBook/OrderBook.wasm
+  - kind: ethereum/contract
+    name: FlpManager
+    network: optimism
+    source:
+      address: "0x945aC6C5e0ffF9522af1dDeEB04e8c1A32FaEbC2"
+      abi: FlpManager
+      startBlock: 97574466
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Action
+        - RecentSwapFee
+        - UserTradesStat
+        - UserFlpStat
+      abis:
+        - name: FlpManager
+          file: FlpManager/abis/FlpManager.json
+      eventHandlers:
+        - event: AddLiquidity(address,address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleAddLiquidity
+        - event: RemoveLiquidity(address,address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleRemoveLiquidity
+      file: OrderBook/OrderBook.wasm
+  - kind: ethereum/contract
+    name: FeeFxdxRewardDistributor
+    network: optimism
+    source:
+      address: "0xc909DefA29D60775F4731E49b77b975e721e5785"
+      abi: RewardDistributor
+      startBlock: 97631535
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RewardAction
+      abis:
+        - name: RewardDistributor
+          file: FeeFxdxRewardDistributor/abis/RewardDistributor.json
+      eventHandlers:
+        - event: Distribute(uint256)
+          handler: handleDistributeFeeRewards
+      file: FeeFxdxRewardDistributor/FeeFxdxRewardDistributor.wasm
+  - kind: ethereum/contract
+    name: EsFxdxFxdxRewardDistributor
+    network: optimism
+    source:
+      address: "0xaF4c0dE1b42eb4778fBd3d55C12b80600FC82E7B"
+      abi: RewardDistributor
+      startBlock: 97629732
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RewardAction
+      abis:
+        - name: RewardDistributor
+          file: EsFxdxFxdxRewardDistributor/abis/RewardDistributor.json
+      eventHandlers:
+        - event: Distribute(uint256)
+          handler: handleDistributeEsFxdxRewards
+      file: FeeFxdxRewardDistributor/FeeFxdxRewardDistributor.wasm
+  - kind: ethereum/contract
+    name: BnFxdxFxdxBonusDistributor
+    network: optimism
+    source:
+      address: "0x49F748ECdAB250F3Cd14E0A9c269e3270Df54019"
+      abi: BonusDistributor
+      startBlock: 97631289
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RewardAction
+      abis:
+        - name: BonusDistributor
+          file: BnFxdxFxdxBonusDistributor/abis/BonusDistributor.json
+      eventHandlers:
+        - event: Distribute(uint256)
+          handler: handleDistributeBnFxdxRewards
+      file: FeeFxdxRewardDistributor/FeeFxdxRewardDistributor.wasm
+  - kind: ethereum/contract
+    name: FeeFlpRewardDistributor
+    network: optimism
+    source:
+      address: "0x1191C2436B44F48CF67c7FD63D75c30600258F0d"
+      abi: RewardDistributor
+      startBlock: 97631773
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RewardAction
+      abis:
+        - name: RewardDistributor
+          file: FeeFlpRewardDistributor/abis/RewardDistributor.json
+      eventHandlers:
+        - event: Distribute(uint256)
+          handler: handleDistributeFeeRewards
+      file: FeeFxdxRewardDistributor/FeeFxdxRewardDistributor.wasm
+  - kind: ethereum/contract
+    name: EsfxdxFlpRewardDistributor
+    network: optimism
+    source:
+      address: "0x4022c3FD7ACD9314b261B7b4EcB84510D9934329"
+      abi: RewardDistributor
+      startBlock: 97631985
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RewardAction
+      abis:
+        - name: RewardDistributor
+          file: EsfxdxFlpRewardDistributor/abis/RewardDistributor.json
+      eventHandlers:
+        - event: Distribute(uint256)
+          handler: handleDistributeEsFxdxRewards
+      file: FeeFxdxRewardDistributor/FeeFxdxRewardDistributor.wasm
+  - kind: ethereum/contract
+    name: StakedFxdxTracker
+    network: optimism
+    source:
+      address: "0x03B34a55eC24AA568Bd799D7566dFF5C1CF5a583"
+      abi: RewardTracker
+      startBlock: 97629685
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RewardAction
+        - RewardsStat
+      abis:
+        - name: RewardTracker
+          file: StakedFxdxTracker/abis/RewardTracker.json
+      eventHandlers:
+        - event: Claim(address,uint256)
+          handler: handleClaimEsFxdxRewards
+      file: FeeFxdxRewardDistributor/FeeFxdxRewardDistributor.wasm
+  - kind: ethereum/contract
+    name: BonusFxdxTracker
+    network: optimism
+    source:
+      address: "0x9E29d8274b1c37a28f6c247606C5D66602A2eB6C"
+      abi: RewardTracker
+      startBlock: 97629901
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RewardAction
+        - RewardsStat
+      abis:
+        - name: RewardTracker
+          file: BonusFxdxTracker/abis/RewardTracker.json
+      eventHandlers:
+        - event: Claim(address,uint256)
+          handler: handleClaimBnFxdxRewards
+      file: FeeFxdxRewardDistributor/FeeFxdxRewardDistributor.wasm
+  - kind: ethereum/contract
+    name: FeeFxdxTracker
+    network: optimism
+    source:
+      address: "0x14c43CC5C08f57C673B7fB6371FDE1131901b5C5"
+      abi: RewardTracker
+      startBlock: 97631483
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RewardAction
+        - RewardsStat
+      abis:
+        - name: RewardTracker
+          file: FeeFxdxTracker/abis/RewardTracker.json
+      eventHandlers:
+        - event: Claim(address,uint256)
+          handler: handleClaimFeeRewards
+      file: FeeFxdxRewardDistributor/FeeFxdxRewardDistributor.wasm
+  - kind: ethereum/contract
+    name: FeeFlpTracker
+    network: optimism
+    source:
+      address: "0x98670281abb53B0c6c4e1F433CE1ea7Cd56f3C33"
+      abi: RewardTracker
+      startBlock: 97631693
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RewardAction
+        - RewardsStat
+      abis:
+        - name: RewardTracker
+          file: FeeFlpTracker/abis/RewardTracker.json
+      eventHandlers:
+        - event: Claim(address,uint256)
+          handler: handleClaimFeeRewards
+      file: FeeFxdxRewardDistributor/FeeFxdxRewardDistributor.wasm
+  - kind: ethereum/contract
+    name: StakedFlpTracker
+    network: optimism
+    source:
+      address: "0xAC28452710b2F5902ed2eC64B7909A47a85FE8e3"
+      abi: RewardTracker
+      startBlock: 97631927
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RewardAction
+        - RewardsStat
+      abis:
+        - name: RewardTracker
+          file: StakedFlpTracker/abis/RewardTracker.json
+      eventHandlers:
+        - event: Claim(address,uint256)
+          handler: handleClaimEsFxdxRewards
+      file: FeeFxdxRewardDistributor/FeeFxdxRewardDistributor.wasm
+  - kind: ethereum/contract
+    name: FxdxVester
+    network: optimism
+    source:
+      address: "0x5AB0Bb45661E3875Bc88fFB71aACa0C9fBFB74e6"
+      abi: Vester
+      startBlock: 97632617
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RewardAction
+        - RewardsStat
+      abis:
+        - name: Vester
+          file: FxdxVester/abis/Vester.json
+      eventHandlers:
+        - event: Claim(address,uint256)
+          handler: handleClaimFxdxRewards
+      file: FeeFxdxRewardDistributor/FeeFxdxRewardDistributor.wasm
+  - kind: ethereum/contract
+    name: FlpVester
+    network: optimism
+    source:
+      address: "0x5098bdF91725BF811f1A9567e2A50c5A317D4137"
+      abi: Vester
+      startBlock: 97632670
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RewardAction
+        - RewardsStat
+      abis:
+        - name: Vester
+          file: FlpVester/abis/Vester.json
+      eventHandlers:
+        - event: Claim(address,uint256)
+          handler: handleClaimFxdxRewards
+      file: FeeFxdxRewardDistributor/FeeFxdxRewardDistributor.wasm
