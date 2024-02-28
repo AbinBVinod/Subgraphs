@@ -1,0 +1,27 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: EsfxdxFlpRewardDistributor
+    network: optimism
+    source:
+      address: "0x4022c3FD7ACD9314b261B7b4EcB84510D9934329"
+      abi: EsfxdxFlpRewardDistributor
+      startBlock: 97631985
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Distribute
+        - TokensPerIntervalChange
+      abis:
+        - name: EsfxdxFlpRewardDistributor
+          file: ./abis/EsfxdxFlpRewardDistributor.json
+      eventHandlers:
+        - event: Distribute(uint256)
+          handler: handleDistribute
+        - event: TokensPerIntervalChange(uint256)
+          handler: handleTokensPerIntervalChange
+      file: ./src/esfxdx-flp-reward-distributor.ts

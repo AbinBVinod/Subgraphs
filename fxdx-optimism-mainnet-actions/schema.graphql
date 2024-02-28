@@ -1,0 +1,15 @@
+type Distribute @entity(immutable: true) {
+  id: Bytes!
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TokensPerIntervalChange @entity(immutable: true) {
+  id: Bytes!
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
